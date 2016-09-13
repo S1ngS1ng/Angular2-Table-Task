@@ -1,3 +1,51 @@
-<h1>
-  {{title}}
-</h1>
+<alert type="info">Time now: {{ date | date:'medium' }}</alert>
+
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading primary">Train Schedule</div>
+    <div class="panel-body">
+        <div dropdown *ngFor="let key of dataKeys" class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" dropdownToggle [disabled]="disabled" >
+                {{key}} <span class="caret"></span>
+            </button>
+            <ul dropdownMenu role="menu" aria-labelledby="single-button">
+                <li *ngFor="let choice of filterUtil[key]" role="menuitem">
+                    <a class="dropdown-item" (click)="getChoice(key, choice)">{{choice}}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-warning" (click)="clearChoice()">
+                Clear Filter
+            </button>
+        </div>
+    </div>
+
+    <div class="alert alert-info" *ngIf="userChoice[0]">
+        <strong>Here are the data filtered by: </strong>{{userChoice[0]}} = {{userChoice[1]}}
+    </div>
+
+    <!-- Table -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th *ngFor="let header of headerArr" (click)="sortColumn(header)">
+                    {{header}}
+                    <i [attr.class]="'fa fa-caret-'+ (sortUtil[header.split(' ').join('')] ? 'up' : 'down')"></i>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let schedule of trainSchedules | dataFilter:userChoice">
+                <td>{{ schedule.origin }}</td>
+                <td>{{ schedule.destination }}</td>
+                <td>{{ schedule.scheduledAt | date: 'medium' }}</td>
+                <td>{{ schedule.delayedFor === 0 ? '': schedule.delayedFor }}</td>
+                <td>{{ schedule.trackNumber ? schedule.trackNumber : 'N/A' }}</td>
+                <td [ngClass]="{delayed: schedule.currentStatus==='Delay', ontime: schedule.currentStatus==='On Time'}">
+                    {{ schedule.currentStatus }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

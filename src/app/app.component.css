@@ -1,0 +1,11 @@
+.panel-body .btn-group {
+    margin: 10px;
+}
+
+.delayed {
+    background-color: #ff5370;
+}
+
+.ontime {
+    color: green;
+}
